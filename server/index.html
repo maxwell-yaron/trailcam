@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles/camera_view.css">
+  <script src="scripts/Socket.js"></script>
+  <script src="scripts/CameraView.js"></script>
+  <title>TrailCAM</title>
+  <script>
+   const kNoConnectMsg = "Not Connected (click to connect).";
+  </script>
+</head>
+<body style="background-color: #666666">
+  <center>
+    <div id="camera"></div>
+    <label for="name">Name:</label>
+    <input type="text" id="name">
+    <label for="interval-time">Capture Interval (min):</label>
+    <input type="number" id="interval-time" value="60">
+    <label for="image-type">Image Type:</label>
+    <select id="image-type">
+      <option>.png</option>
+      <option>.jpg</option>
+      <option>.bmp</option>
+    </select>
+    <button onclick="updateConfig()">Update</button>
+  </center>
+  <script>
+    var view = new CameraView("camera", 1000, 600, "192.168.1.243", 7000);
+    window.onload = function() {
+      view.setInfo(kNoConnectMsg);
+    }
+    function updateConfig() {
+      var config = {
+        'name': document.getElementById('name').value,
+        'interval': parseInt(document.getElementById('interval-time').value),
+        'file-ext': document.getElementById('image-type').value,
+      };
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("POST","update_config",true);
+      xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xhttp.send(JSON.stringify(config));
+    }
+  </script>
+</body>
+</html>
